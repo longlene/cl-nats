@@ -30,7 +30,7 @@
     (connect conn)))
 
 (defun subscribe (connection subject handler &key queue-group)
-  ""
+  "Expresses interest in the given subject"
   (declare (subject subject))
   (let ((sid (inc-sid connection)))
     (set-subscription-handler connection sid handler)
@@ -71,8 +71,9 @@
   ""
   ; TODO when connection open only
   (handler-case
+    (progn
       (bt:destroy-thread (thread-of connection))
-      (usocket:socket-close (socket-of connection))
+      (usocket:socket-close (socket-of connection)))
     (error (e)
       (warn "Ignoring error when trying to close NATS socket: ~A" e))))
 
